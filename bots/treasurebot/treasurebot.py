@@ -1,6 +1,7 @@
 import argparse
 import logging
 
+import credentials
 from chatbots import clients
 from chatbots import handler
 from chatbots import responses
@@ -39,7 +40,7 @@ def run_client(client_class):
         message_handler = get_message_handler()
 
         client = client_class(command_handler, message_handler)
-        client.run(settings.BOT_TOKEN)
+        client.run(credentials.BOT_TOKEN)
 
 
 if __name__ == '__main__':

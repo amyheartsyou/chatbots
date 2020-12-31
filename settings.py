@@ -5,9 +5,6 @@ AMY_ID = 745839831535452167
 # User id of the bot itself.
 BOT_ID = 779563686414909471
 
-# Discord bot token
-BOT_TOKEN = ''
-
 # Discord channel Ids
 CHANNELS = {
     # Botland channel id
