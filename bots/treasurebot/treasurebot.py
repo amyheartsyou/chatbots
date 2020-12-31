@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 
 import credentials
 from chatbots import clients
@@ -16,10 +17,14 @@ MODE_CLT = 'clt'
 MODE_DISCORD = 'discord'
 
 
-def config_logging(level):
+def config_logging(cwd, level):
+    filename = os.path.join(cwd, settings.LOG_FILE)
+    if not os.path.exists(filename):
+        open(filename, 'a').close()
+
     logging.basicConfig(
         format=settings.LOG_FORMAT,
-        filename=settings.LOG_FILE,
+        filename=filename,
         level=level
     )
 
@@ -34,8 +39,9 @@ def get_message_handler():
     return message_handler
 
 
-def run_client(client_class):
-    with TreasurePersistor(settings.DB_NAME) as persistor:
+def run_client(client_class, cwd):
+    filename = os.path.join(cwd, settings.DB_NAME)
+    with TreasurePersistor(filename) as persistor:
         command_handler = handler.CommandHandler(persistor)
         message_handler = get_message_handler()
 
@@ -44,7 +50,8 @@ def run_client(client_class):
 
 
 if __name__ == '__main__':
-    config_logging(logging.INFO)
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    config_logging(cwd, logging.INFO)
     args = parser.parse_args()
     if args.mode == MODE_DISCORD:
         client_class = clients.DiscordClient
@@ -53,4 +60,4 @@ if __name__ == '__main__':
     else:
         raise Exception(f"Invalid Client: {args.mode}")
 
-    run_client(client_class)
+    run_client(client_class, cwd)
