@@ -1,6 +1,6 @@
 import unittest
 
-from chatbots import commands
+from chatbots.bots.treasurebot import commands
 
 
 class HandlerTest(unittest.TestCase):
@@ -23,8 +23,8 @@ class HandlerTest(unittest.TestCase):
             '2 x Citrine (500 sp)'
         )
         expected = [
-            {"quantity": 1, "type": 'GEM', "value": 50.0, "name": "Jade"},
-            {"quantity": 2, "type": 'GEM', "value": 50.0, "name": "Citrine"},
+            {"quantity": 1, "type": 'GEM', "value": 50.0, "name": "jade"},
+            {"quantity": 2, "type": 'GEM', "value": 50.0, "name": "citrine"},
         ]
         command = commands.Command(message)
         self.assertEqual('add_treasure', command.action)
@@ -39,9 +39,9 @@ class HandlerTest(unittest.TestCase):
             '3 x Treas 3 (77 gp)'
         )
         expected = [
-            {"quantity": 1, "name": "Treas 1", "type": 'LOOT', "value": 24.0},
-            {"quantity": 1, "name": "Treas 2", "type": 'LOOT', "value": 60.0},
-            {"quantity": 3, "name": "Treas 3", "type": 'LOOT', "value": 77.0},
+            {"quantity": 1, "name": "treas 1", "type": 'LOOT', "value": 24.0},
+            {"quantity": 1, "name": "treas 2", "type": 'LOOT', "value": 60.0},
+            {"quantity": 3, "name": "treas 3", "type": 'LOOT', "value": 77.0},
         ]
         command = commands.Command(message)
         self.assertEqual('add_treasure', command.action)
@@ -55,8 +55,8 @@ class HandlerTest(unittest.TestCase):
             '2 x Item 2 (rare, dmg 555)'
         )
         expected = [
-            {"quantity": 1, "name": 'Item 1', "type": "ITEM"},
-            {"quantity": 2, "name": 'Item 2', "type": "ITEM"},
+            {"quantity": 1, "name": 'item 1', "type": "ITEM"},
+            {"quantity": 2, "name": 'item 2', "type": "ITEM"},
         ]
         command = commands.Command(message)
         self.assertEqual('add_treasure', command.action)
@@ -70,11 +70,23 @@ class HandlerTest(unittest.TestCase):
             '2 x Spell Scroll (Spell 2) (rare, dmg 343)'
         )
         expected = [
-            {"quantity": 1, "name": 'Spell 1', "type": "SCROLL"},
-            {"quantity": 2, "name": 'Spell 2', "type": "SCROLL"},
+            {"quantity": 1, "name": 'spell 1', "type": "SCROLL"},
+            {"quantity": 2, "name": 'spell 2', "type": "SCROLL"},
         ]
         command = commands.Command(message)
         self.assertEqual('add_treasure', command.action)
+        self.assertEqual(0, len(command.errors))
+        self.assertEqual(expected, command.data)
+
+    def testDropLoot(self):
+        message = (
+            '$drop '
+            'Treas 1,'
+            '2 x Treas 2'
+        )
+        expected = ['treas 1', '2 x treas 2']
+        command = commands.Command(message)
+        self.assertEqual('remove_treasure', command.action)
         self.assertEqual(0, len(command.errors))
         self.assertEqual(expected, command.data)
 

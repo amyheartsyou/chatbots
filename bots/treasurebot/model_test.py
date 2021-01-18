@@ -1,7 +1,7 @@
 import unittest
 
-from chatbots import model
-from chatbots import test_data
+from chatbots.bots.treasurebot import model
+from chatbots.bots.treasurebot import test_data
 
 
 TEST_DB_PATH = ':memory:'

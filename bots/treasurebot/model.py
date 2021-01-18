@@ -1,6 +1,6 @@
 import peewee
 
-from chatbots import settings
+from chatbots.bots.treasurebot import settings
 
 
 db = peewee.SqliteDatabase(None)
@@ -86,15 +86,8 @@ class TreasurePersistor:
         else:
             return Treasure.select().where(Treasure.name == treasure_filter)
 
-    def remove_treasure(self, identifier, quantity=None):
-        if identifier in settings.GROUPS:
-            results = Treasure.select().where(Treasure.type == identifier)
-        else:
-            results = Treasure.select().where(Treasure.name == identifier)
-
-        results = list(results)
-
-        for result in results:
+    def remove_treasure(self, treasure_filter, quantity=None):
+        for result in self.get_treasure(treasure_filter):
             if quantity is None or quantity > result.quantity:
                 result.quantity = 0
             else:

@@ -3,7 +3,8 @@ import datetime
 import re
 import random
 
-from chatbots import settings
+from chatbots.bots.treasurebot import settings
+from chatbots.bots.treasurebot import commands
 
 SHH_FILE = 'shh'
 
@@ -13,7 +14,8 @@ class CommandHandler:
     def __init__(self, persistor):
         self.persistor = persistor
 
-    def handle(self, command):
+    def handle(self, message):
+        command = commands.Command(message)
         if command.errors:
             return f'Error: {", ".join(command.errors)}'
 
@@ -40,10 +42,11 @@ class CommandHandler:
         return '\n'.join(output)
 
     def remove_treasure(self, command):
-        print(command.data)
+        dropped = ["Dropped: "]
         for item in list(command.data):
             self.persistor.remove_treasure(item)
-        return 'Dropped.'
+            dropped.append(item['name'])
+        return ", ".join(dropped)
 
     def split(self, command):
         try:

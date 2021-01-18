@@ -1,9 +1,9 @@
 import unittest
 
 
-from chatbots import responses
-from chatbots import settings
-from chatbots.handler import MessageHandler
+from chatbots.bots.treasurebot import responses
+from chatbots.bots.treasurebot import settings
+from chatbots.bots.treasurebot.handler import MessageHandler
 
 
 class CommandHandlerTest(unittest.TestCase):
@@ -23,7 +23,7 @@ class MessageHandlerTest(unittest.TestCase):
         handler.add_user_responses(settings.AMY_ID, responses.AMY_RESPONSES)
         handler.add_responses(responses.RESPONSES)
         response = handler.handle(123456789, '|❤️|')
-        self.assertEqual("💩", response)
+        self.assertIn(response, responses.RESPONSES['❤️'])
 
     def testHandleUnrecognized(self):
         handler = MessageHandler()

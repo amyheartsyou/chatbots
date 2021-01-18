@@ -56,4 +56,11 @@ RESPONSES = {
         "",
         "",
     ],
+
+    # Quotes
+    '!quote': [
+        'Talon: "I start purring."',
+        'Errin: "Imagine a donkey, but a lobster."',
+        'Amy: "He\'s not stupid, he\'s just smarter than fewer people."',
+    ],
 }

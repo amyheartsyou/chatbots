@@ -2,18 +2,18 @@ import argparse
 import logging
 import os
 
-import credentials
 from chatbots import clients
-from chatbots import handler
-from chatbots import responses
-from chatbots import settings
-from chatbots.model import TreasurePersistor
+import credentials
+import handler
+import responses
+import settings
+from model import TreasurePersistor
 
 
 parser = argparse.ArgumentParser(description="TreasureBotParser")
 parser.add_argument('mode', type=str)
 
-MODE_CLT = 'clt'
+MODE_CLT = 'cli'
 MODE_DISCORD = 'discord'
 
 
@@ -50,9 +50,11 @@ def run_client(client_class, cwd):
 
 
 if __name__ == '__main__':
+    args = parser.parse_args()
+
     cwd = os.path.dirname(os.path.realpath(__file__))
     config_logging(cwd, logging.INFO)
-    args = parser.parse_args()
+
     if args.mode == MODE_DISCORD:
         client_class = clients.DiscordClient
     elif args.mode == MODE_CLT:

@@ -3,14 +3,15 @@ import logging
 
 import discord
 
-from chatbots import commands
-from chatbots import settings
+# from chatbots import commands
+from chatbots.bots.treasurebot import settings
 
 
-AMY = 'Amy'
-AMY_COMMAND = '`AMY'
-USER_COMMAND = '`'
+# AMY = 'Amy'
+# AMY_COMMAND = '`AMY'
+# USER_COMMAND = '`'
 AUTHOR_NAME = 'You'
+AUTHOR_ID = 100
 
 
 class Client:
@@ -22,11 +23,18 @@ class Client:
 
     def handle_message(self, author, message):
         message = message.strip()
-        if self.command_handler and message.startswith(settings.COMMAND_PREFIX):
-            command = commands.Command(message)
-            response = self.command_handler.handle(command)
-        else:
+        response = None
+        if self.command_handler:
+            response = self.command_handler.handle(author, message)
+        if response is None:
             response = self.message_handler.handle(author, message)
+        # if command:
+
+        # if self.command_handler and message.startswith(settings.COMMAND_PREFIX):
+        #     command = commands.Command(message)
+        #     response = self.command_handler.handle(command)
+        # else:
+        #     response = self.message_handler.handle(author, message)
         return response
 
 
@@ -60,28 +68,34 @@ class CLTClient(Client):
         print("Initializing CLT Client")
         super().__init__(command_handler, message_handler)
         self.author = AUTHOR_NAME
+        self.author_id = AUTHOR_ID
 
-    def handle_user_switch(self, content):
-        if content.startswith(AMY_COMMAND):
-            self.author = AMY
-            content = content[len(AMY_COMMAND):]
-        elif content.startswith(USER_COMMAND):
-            self.author = AUTHOR_NAME
-            content = content[len(USER_COMMAND):]
-        return content
+    # def handle_user_switch(self, content):
+    #     if content.startswith(AMY_COMMAND):
+    #         self.author = AMY
+    #         content = content[len(AMY_COMMAND):]
+    #     elif content.startswith(USER_COMMAND):
+    #         self.author = AUTHOR_NAME
+    #         content = content[len(USER_COMMAND):]
+    #     return content
 
     def run(self, _):
         while True:
             content = input(f'{self.author}: ')
 
-            content = self.handle_user_switch(content)
+            if content.startswith('`') and content.endswith('`'):
+                name, author_id = content.strip('`').split(':')
+                self.author = name
+                self.author_id = author_id
 
-            if self.author == AMY:
-                author_id = settings.AMY_ID
-            else:
-                author_id = 100
+            # content = self.handle_user_switch(content)
 
-            response = self.handle_message(author_id, content.strip())
+            # if self.author == AMY:
+            #     author_id = settings.AMY_ID
+            # else:
+            #     author_id = 100
+
+            response = self.handle_message(self.author_id, content.strip())
 
             if response:
                 print('TreasureBot:', response)
